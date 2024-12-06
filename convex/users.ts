@@ -10,6 +10,7 @@ export const current = query({
     if (userId === null) {
       return null;
     }
-    const user = await ctx.db.get(userId);
+
+    return await ctx.db.get(userId);
   },
 });
