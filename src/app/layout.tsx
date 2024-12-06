@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <ConvexAuthNextjsServerProvider>
       <html lang="en">
-        <body className={`${inter.className} antialiased`}>
+        <body className={`${inter.className} antialiased bg-slate-800`}>
           <ConvexClientProvider>{children}</ConvexClientProvider>
         </body>
       </html>
