@@ -1,13 +1,7 @@
-import React from "react";
+"use client";
 
-interface WorkspaceIdPageProps {
-  params: {
-    workspaceId: string;
-  };
-}
-
-const WorkspaceIdPage = ({ params: { workspaceId } }: WorkspaceIdPageProps) => {
-  return <div>ID: {workspaceId}</div>;
+const WorkspaceIdPage = () => {
+  return <div></div>;
 };
 
 export default WorkspaceIdPage;
