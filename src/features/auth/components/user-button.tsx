@@ -28,9 +28,9 @@ const UserButton = () => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="outline-none relative">
-        <Avatar className="size-10 hover:opacity-75 transition">
-          <AvatarImage alt="Name" src={image} />
-          <AvatarFallback className="bg-sky-400 text-white font-semibold">
+        <Avatar className="rounded-md size-10 hover:opacity-75 transition">
+          <AvatarImage className="rounded-md" alt="Name" src={image} />
+          <AvatarFallback className="rounded-md bg-sky-400 text-white font-semibold">
             {avatarFallback}
           </AvatarFallback>
         </Avatar>
