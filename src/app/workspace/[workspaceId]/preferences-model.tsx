@@ -65,7 +65,7 @@ export const PreferencesModal = ({
     e.preventDefault();
 
     updateWorkspace(
-      { 
+      {
         id: workspaceId,
         name: value,
       },
@@ -134,7 +134,7 @@ export const PreferencesModal = ({
             </Dialog>
 
             <button
-              disabled={false}
+              disabled={isRemovingWorkspace}
               onClick={handleRemove}
               className="flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50 text-rose-600"
             >
