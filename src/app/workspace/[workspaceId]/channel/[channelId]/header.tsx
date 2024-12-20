@@ -110,7 +110,7 @@ const Header = ({ title }: HeaderProps) => {
           </DialogHeader>
           <div className="px-4 pb-4 flex flex-col gap-y-2">
             <Dialog open={editOpen} onOpenChange={handleEditOpen}>
-              value: boolean setEditOepn(value){" "}
+              {value}
               <DialogTrigger asChild>
                 <div className="px-5 py-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50">
                   <div className="flex items-center justify-between">
