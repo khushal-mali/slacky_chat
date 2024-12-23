@@ -1,17 +1,18 @@
+import useRemoveMessage from "@/features/messages/api/use-remove-message";
 import useUpdateMessage from "@/features/messages/api/use-update-message";
+import useToggleReaction from "@/features/reactions/api/use-toggle-reaction";
+import useConfirm from "@/hooks/use-confirm";
+import usePanel from "@/hooks/use-panel";
+import { cn } from "@/lib/utils";
 import { format, isToday, isYesterday } from "date-fns";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import { Doc, Id } from "../../convex/_generated/dataModel";
 import Hint from "./hint";
+import Reactions from "./reactions";
 import Thumbnail from "./thumbnail";
 import Toolbar from "./toolbar";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { cn } from "@/lib/utils";
-import useRemoveMessage from "@/features/messages/api/use-remove-message";
-import useConfirm from "@/hooks/use-confirm";
-import useToggleReaction from "@/features/reactions/api/use-toggle-reaction";
-import Reactions from "./reactions";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 const Renderer = dynamic(() => import("./renderer"), { ssr: false });
 
@@ -63,6 +64,7 @@ const Message = ({
   threadImage,
   threadTimeStamp,
 }: MessageProps) => {
+  const { parentMessageId, onOpenMessage, onClose } = usePanel();
   const [ConfirmDialog, confirm] = useConfirm(
     "Delete Message",
     "Are you sure you want to delete this message? This cannot be undone."
@@ -94,7 +96,9 @@ const Message = ({
         onSuccess: () => {
           toast.success("Message deleted.");
 
-          // TODO: close thread if open.
+          // if (id === parentMessageId) {
+          //   onClose();
+          // }
         },
         onError: () => {
           toast.success("Failed to Remove Message.");
@@ -124,7 +128,7 @@ const Message = ({
         <ConfirmDialog />
         <div
           className={cn(
-            "flex flex-col flex-1 gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
+            "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
             isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]",
             isRemovingMessage &&
               "bg-red-500/50 transform transition-all scale-y-0 origin-bottom duration-200"
@@ -136,6 +140,7 @@ const Message = ({
                 {format(new Date(createdAt), "hh:mm")}
               </button>
             </Hint>
+
             {isEditing ? (
               <div className="w-full h-full">
                 <Editor
@@ -162,7 +167,7 @@ const Message = ({
               isAuthor={isAuthor}
               isPending={isPending}
               handleEdit={() => setEditingId(id)}
-              handleThread={() => {}}
+              handleThread={() => onOpenMessage(id)}
               handleDelete={handleRemove}
               handleReaction={handleReaction}
               hideThreadButton={hideThreadButton}
@@ -175,13 +180,14 @@ const Message = ({
 
   const avatarFallback = authorName.charAt(0).toUpperCase();
 
+  // flex-1
+
   return (
     <>
       <ConfirmDialog />
-
       <div
         className={cn(
-          "flex flex-col flex-1 gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
+          "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
           isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]",
           isRemovingMessage &&
             "bg-red-500/50 transform transition-all scale-y-0 origin-bottom duration-200"
@@ -232,7 +238,7 @@ const Message = ({
             isAuthor={isAuthor}
             isPending={isPending}
             handleEdit={() => setEditingId(id)}
-            handleThread={() => {}}
+            handleThread={() => onOpenMessage(id)}
             handleDelete={handleRemove}
             handleReaction={handleReaction}
             hideThreadButton={hideThreadButton}
