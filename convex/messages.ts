@@ -68,6 +68,68 @@ const getMember = async (
     .unique();
 };
 
+export const remove = mutation({
+  args: {
+    id: v.id("messages"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const message = await ctx.db.get(args.id);
+
+    if (!message) {
+      throw new Error("Message not found!");
+    }
+
+    const member = await getMember(ctx, message.workspaceId, userId);
+
+    if (!member || member._id !== message.memberId) {
+      throw new Error("Unauthorized!");
+    }
+
+    await ctx.db.delete(args.id);
+
+    return args.id;
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id("messages"),
+    body: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const message = await ctx.db.get(args.id);
+
+    if (!message) {
+      throw new Error("Message not found!");
+    }
+
+    const member = await getMember(ctx, message.workspaceId, userId);
+
+    if (!member || member._id !== message.memberId) {
+      throw new Error("Unauthorized!");
+    }
+
+    await ctx.db.patch(args.id, {
+      body: args.body,
+      updatedAt: Date.now(),
+    });
+
+    return args.id;
+  },
+});
+
 export const get = query({
   args: {
     channelId: v.optional(v.id("channels")),
@@ -116,7 +178,6 @@ export const get = query({
               return null;
             }
 
-            console.log("line 119");
             const reactions = await populateReactions(ctx, message._id);
             const thread = await populateThread(ctx, message._id);
             const image = message.image
@@ -130,8 +191,6 @@ export const get = query({
                   .length,
               };
             });
-
-            console.log("line 134");
 
             const dedupedReactions = reactionsWithCounts.reduce(
               (acc, reaction) => {
@@ -155,13 +214,9 @@ export const get = query({
               })[]
             );
 
-            console.log("line 158");
-
             const reactionsWithoutMemberIdProperty = dedupedReactions.map(
               ({ memberId, ...rest }) => rest
             );
-
-            console.log("line 159");
 
             return {
               ...message,
@@ -176,7 +231,6 @@ export const get = query({
           })
         )
       ).filter((message): message is NonNullable<typeof message> => {
-        console.log("line 179");
         return message !== null;
       }),
     };
