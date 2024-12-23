@@ -11,7 +11,6 @@ type RequestType = {
   channelId?: Id<"channels">;
   parentMessageId?: Id<"messages">;
   conversationId?: Id<"conversations">;
-  // TODO: Add conversationId
 };
 type ResponseType = Id<"messages"> | null;
 
