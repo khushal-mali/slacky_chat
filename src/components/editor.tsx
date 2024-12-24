@@ -84,8 +84,7 @@ const Editor = ({
                 const text = quill.getText();
                 const addedImage = imageElementRef?.current?.files?.[0] || null;
                 const isEmpty =
-                  !addedImage &&
-                  text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+                  !addedImage && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
                 if (isEmpty) return;
 
                 const body = JSON.stringify(quill.getContents());
@@ -144,10 +143,10 @@ const Editor = ({
     }
   };
 
-  const onEmojiSelect = (emoji: any) => {
+  const onEmojiSelect = (emojiValue: string) => {
     const quill = quillRef.current;
 
-    quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
+    quill?.insertText(quill?.getSelection()?.index || 0, emojiValue);
   };
 
   const isEmpty = !image && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
@@ -194,9 +193,7 @@ const Editor = ({
           </div>
         )}
         <div className="flex px-2 pb-2 z-[5]">
-          <Hint
-            label={isToolbarVisible ? "Hide formatting" : "Show formatting"}
-          >
+          <Hint label={isToolbarVisible ? "Hide formatting" : "Show formatting"}>
             <Button
               disabled={disabled}
               size={"sm"}
