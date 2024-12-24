@@ -25,14 +25,11 @@ const Toolbar = ({
   return (
     <div className="absolute top-0 right-5">
       <div className="group-hover:opacity-100 opacity-0 transition-opacity border bg-white rounded-md shadow-sm">
-        <EmojiPopver
-          hint="Add reaction"
-          onEmojiSelect={(emoji) => handleReaction(emoji.native)}
-        >
+        <EmojiPopver hint="Add reaction" onEmojiSelect={(emoji) => handleReaction(emoji)}>
           <Button variant={"ghost"} size={"sm"} disabled={isPending}>
             <Smile className="size-4" />
           </Button>
-        </EmojiPopver>
+        </EmojiPopver> 
 
         {!hideThreadButton && (
           <Hint label="Reply in thread">
