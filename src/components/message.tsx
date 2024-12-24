@@ -13,6 +13,7 @@ import Reactions from "./reactions";
 import Thumbnail from "./thumbnail";
 import Toolbar from "./toolbar";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import ThreadBar from "./thread-bar";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 const Renderer = dynamic(() => import("./renderer"), { ssr: false });
 
@@ -38,6 +39,7 @@ interface MessageProps {
   hideThreadButton?: boolean;
   threadCount?: number;
   threadImage?: string;
+  threadName?: string;
   threadTimeStamp?: number;
 }
 
@@ -62,9 +64,10 @@ const Message = ({
   isCompact,
   threadCount,
   threadImage,
+  threadName,
   threadTimeStamp,
 }: MessageProps) => {
-  const { parentMessageId, onOpenMessage, onClose } = usePanel();
+  const { parentMessageId, onOpenMessage, onOpenProfile, onClose } = usePanel();
   const [ConfirmDialog, confirm] = useConfirm(
     "Delete Message",
     "Are you sure you want to delete this message? This cannot be undone."
@@ -73,7 +76,7 @@ const Message = ({
   const { mutate: removeMessage, isPending: isRemovingMessage } = useRemoveMessage();
   const { mutate: toggleReaction, isPending: isTogglingReaction } = useToggleReaction();
 
-  const isPending = isUpdatingMessage;
+  const isPending = isUpdatingMessage || isTogglingReaction;
 
   const handleReaction = (value: string) => {
     toggleReaction(
@@ -96,9 +99,9 @@ const Message = ({
         onSuccess: () => {
           toast.success("Message deleted.");
 
-          // if (id === parentMessageId) {
-          //   onClose();
-          // }
+          if (id === parentMessageId) {
+            onClose();
+          }
         },
         onError: () => {
           toast.success("Failed to Remove Message.");
@@ -156,9 +159,18 @@ const Message = ({
                 <Renderer value={body} />
                 <Thumbnail url={image} />
 
-                {updatedAt ? <span className="text-xs text-muted-foreground">(edited)</span> : null}
+                {updatedAt ? (
+                  <span className="text-xs text-muted-foreground">(edited)</span>
+                ) : null}
 
                 <Reactions onChange={handleReaction} data={reactions} />
+                <ThreadBar
+                  count={threadCount}
+                  image={threadImage}
+                  name={threadName}
+                  timestamp={threadTimeStamp}
+                  onClick={() => onOpenMessage(id)}
+                />
               </div>
             )}
           </div>
@@ -194,7 +206,7 @@ const Message = ({
         )}
       >
         <div className="flex items-start gap-2">
-          <button>
+          <button onClick={() => onOpenProfile(memberId)}>
             <Avatar>
               <AvatarImage src={authorImage} />
               <AvatarFallback>{avatarFallback}</AvatarFallback>
@@ -214,7 +226,10 @@ const Message = ({
           ) : (
             <div className="flex flex-col w-full overflow-hidden">
               <div className="text-sm">
-                <button onClick={() => {}} className="font-bold text-primary hover:underline">
+                <button
+                  onClick={() => onOpenProfile(memberId)}
+                  className="font-bold text-primary hover:underline"
+                >
                   {authorName}
                 </button>
                 <span>&nbsp;&nbsp;</span>
@@ -226,8 +241,17 @@ const Message = ({
                 <Renderer value={body} />
                 <Thumbnail url={image} />
 
-                {updatedAt ? <span className="text-xs text-muted-foreground">(edited)</span> : null}
+                {updatedAt ? (
+                  <span className="text-xs text-muted-foreground">(edited)</span>
+                ) : null}
                 <Reactions onChange={handleReaction} data={reactions} />
+                <ThreadBar
+                  count={threadCount}
+                  image={threadImage}
+                  timestamp={threadTimeStamp}
+                  name={threadName}
+                  onClick={() => onOpenMessage(id)}
+                />
               </div>
             </div>
           )}
