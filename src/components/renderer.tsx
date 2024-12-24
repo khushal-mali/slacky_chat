@@ -1,7 +1,5 @@
-import React from "react";
 import Quill from "quill";
-import { useState, useEffect, useRef } from "react";
-import { Doc } from "../../convex/_generated/dataModel";
+import { useEffect, useRef, useState } from "react";
 
 interface RendererProps {
   value: string;

@@ -62,7 +62,7 @@ const Threads = ({ messageId, onClose }: TheadsProps) => {
   const canLoadMore = status === "CanLoadMore";
   const isLoadingMore = status === "LoadingMore";
 
-  const handleSubmit = async ({ image, body }: {  body: string; image: File | null }) => {
+  const handleSubmit = async ({ image, body }: { body: string; image: File | null }) => {
     console.log(image);
     try {
       setIsPending(true);
@@ -203,6 +203,7 @@ const Threads = ({ messageId, onClose }: TheadsProps) => {
                   createdAt={message._creationTime}
                   threadCount={message.threadCount}
                   threadImage={message.threadImage}
+                  threadName={message.threadName}
                   threadTimeStamp={message.threadTimestamp}
                 />
               );
