@@ -1,6 +1,10 @@
 "use client";
 
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 import React from "react";
 import Toolbar from "./toolbar";
@@ -10,15 +14,16 @@ import usePanel from "@/hooks/use-panel";
 import { Loader } from "lucide-react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import Threads from "@/features/messages/components/thread";
+import Profile from "@/features/members/components/profile";
 
 interface WorkspaceIdLayoutProps {
   children: React.ReactNode;
 }
 
 const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
-  const { parentMessageId, onClose } = usePanel();
+  const { parentMessageId, profileMemberId, onClose } = usePanel();
 
-  const showPanel = !!parentMessageId;
+  const showPanel = !!parentMessageId || !!profileMemberId;
 
   return (
     <nav className="h-full">
@@ -30,13 +35,23 @@ const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
             <WorkspaceSidebar />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel minSize={20}>{children}</ResizablePanel>
+          <ResizablePanel minSize={20} defaultSize={80}>
+            {children}
+          </ResizablePanel>
           {showPanel && (
             <>
               <ResizableHandle withHandle />
               <ResizablePanel minSize={20} defaultSize={29}>
                 {parentMessageId ? (
-                  <Threads messageId={parentMessageId as Id<"messages">} onClose={onClose} />
+                  <Threads
+                    messageId={parentMessageId as Id<"messages">}
+                    onClose={onClose}
+                  />
+                ) : profileMemberId ? (
+                  <Profile
+                    memberId={profileMemberId as Id<"members">}
+                    onClose={onClose}
+                  />
                 ) : (
                   <div className="flex h-full items-center justify-center">
                     <Loader className="size-5 text-muted-foreground animate-spin" />
