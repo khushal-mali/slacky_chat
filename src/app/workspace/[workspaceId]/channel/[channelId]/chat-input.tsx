@@ -32,13 +32,7 @@ const ChatInput = ({ placeholder }: ChatInputProps) => {
   const { mutate: generateUploadUrl } = useGenerateUploadUrl();
   const { mutate: createMessage } = useCreateMessage();
 
-  const handleSubmit = async ({
-    image,
-    body,
-  }: {
-    body: string;
-    image: File | null;
-  }) => {
+  const handleSubmit = async ({ image, body }: { body: string; image: File | null }) => {
     console.log(image);
     try {
       setIsPending(true);
@@ -55,15 +49,11 @@ const ChatInput = ({ placeholder }: ChatInputProps) => {
         const url = await generateUploadUrl({}, { throwError: true });
         if (!url) throw new Error("Url not found");
 
-        console.log(url);
-
         const result = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": image.type },
           body: image,
         });
-
-        console.log(result);
 
         if (!result.ok) {
           throw new Error("Failed to upload image.");
