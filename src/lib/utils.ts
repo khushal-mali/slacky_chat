@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function constructMetadata({
-  title = "The Slacky Chat",
+  title = "The Slacky Chat - Used for workplace communication",
   description = "Mainly used for workplace communication and collaboration on various tasks and projects.",
   image = "/thumbnail.png",
   icons = "/favicon.ico",
